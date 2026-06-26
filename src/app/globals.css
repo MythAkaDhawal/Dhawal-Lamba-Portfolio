@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
+@theme {
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-highlight: var(--highlight);
+  --color-highlight-dim: var(--highlight-dim);
+  --color-stroke: var(--stroke-color);
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors - Light Theme */
+  --bg-primary: #FAFAF9;
+  --bg-secondary: #F4F3F0;
+  --bg-tertiary: #EEEDE9;
+  --text-primary: #111110;
+  --text-secondary: #6B6A66;
+  --text-tertiary: #9C9B97;
+  --border-subtle: #E5E4E0;
+  --border-default: #D1D0CB;
+  --accent: #1A1A1A;
+  --accent-text: #FAFAF9;
+  --highlight: #3D5AFE;
+  --highlight-dim: rgba(61, 90, 254, 0.08);
+  --stroke-color: #D1D0CB;
+
+  /* Font Scale Definitions */
+  --type-xs: 0.75rem;
+  --type-sm: 0.875rem;
+  --type-base: 1rem;
+  --type-md: 1.125rem;
+  --type-lg: 1.25rem;
+  --type-xl: 1.5rem;
+  --type-2xl: 1.875rem;
+  --type-3xl: 2.25rem;
+  --type-4xl: 3rem;
+  --type-5xl: 3.75rem;
+  --type-6xl: 4.5rem;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --space-40: 160px;
+  --space-48: 192px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  /* Colors - Dark Theme */
+  --bg-primary: #0E0E0D;
+  --bg-secondary: #161615;
+  --bg-tertiary: #1E1E1C;
+  --text-primary: #F0EFE9;
+  --text-secondary: #8A8980;
+  --text-tertiary: #57564F;
+  --border-subtle: #252523;
+  --border-default: #302F2C;
+  --accent: #F0EFE9;
+  --accent-text: #0E0E0D;
+  --highlight: #6B7FFF;
+  --highlight-dim: rgba(107, 127, 255, 0.10);
+  --stroke-color: #302F2C;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base Styles */
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 300ms ease, color 300ms ease;
+  overflow-x: hidden;
+}
+
+/* Custom Typography Classes */
+.text-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.text-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+
+.text-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--type-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--type-sm);
+  letter-spacing: -0.01em;
+}
+
+/* Focus style helpers */
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--highlight);
+  outline-offset: 3px;
+}
+
+/* Scroll Snap/Smoothness */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
