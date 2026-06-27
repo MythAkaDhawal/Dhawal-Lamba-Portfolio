@@ -43,11 +43,6 @@ export function ThemeToggle() {
             ? "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" 
             : "M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14Z"
           }
-          animate={{
-            d: isDark 
-              ? "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" 
-              : "M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14Z"
-          }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         />
         

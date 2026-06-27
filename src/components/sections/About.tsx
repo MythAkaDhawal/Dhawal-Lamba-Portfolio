@@ -2,7 +2,6 @@
 
 import React from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { StaggerChildren } from "@/components/motion/StaggerChildren";
 
@@ -30,7 +29,7 @@ export function About() {
           {/* Opening Statement */}
           <FadeUp className="max-w-3xl">
             <h3 className="text-display text-[clamp(1.75rem,5vw,2.5rem)] font-normal text-text-primary leading-tight mb-12 select-none">
-              I'm a CS student specializing in AI and ML — building systems
+              I&apos;m a CS student specializing in AI and ML — building systems
               that work in the real world, not just in notebooks.
             </h3>
           </FadeUp>
@@ -49,7 +48,7 @@ export function About() {
                 and web platforms that people actually use.
               </p>
               <p className="text-text-secondary text-base leading-relaxed font-sans">
-                I've worked on systems that touch security, education, e-commerce, 
+                I&apos;ve worked on systems that touch security, education, e-commerce, 
                 and research — each one a different problem set, but the same underlying 
                 discipline: understand the problem deeply, then build the simplest 
                 thing that solves it well.
@@ -63,12 +62,12 @@ export function About() {
               </h4>
               <p className="text-text-secondary text-base leading-relaxed font-sans">
                 I approach every build as a product problem first and an 
-                engineering problem second. The best software isn't the most 
-                architecturally sophisticated — it's the one that does what the 
+                engineering problem second. The best software isn&apos;t the most 
+                architecturally sophisticated — it&apos;s the one that does what the 
                 user needs without requiring them to think about how.
               </p>
               <p className="text-text-secondary text-base leading-relaxed font-sans">
-                Curiosity is the constant. Whether I'm integrating a RAG pipeline, 
+                Curiosity is the constant. Whether I&apos;m integrating a RAG pipeline, 
                 building a recommendation system, or designing a registration flow, 
                 the question is always the same: what actually needs to be here?
               </p>

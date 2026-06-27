@@ -23,9 +23,9 @@ export default function Home() {
       <main className="flex-1 w-full bg-bg-primary text-text-primary">
         {/* Continuous SVG Stroke wraps Hero and About */}
         <div className="relative w-full">
-          <StrokePath />
           <Hero />
           <About />
+          <StrokePath />
         </div>
         <Projects />
         <Skills />

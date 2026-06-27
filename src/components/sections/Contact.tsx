@@ -29,14 +29,14 @@ export function Contact() {
           {/* Heading */}
           <FadeUp>
             <SectionHeading className="mb-4">
-              Let's build something.
+              Let&apos;s build something.
             </SectionHeading>
           </FadeUp>
 
           {/* Tagline */}
           <FadeUp className="max-w-md mx-auto mb-10">
             <p className="text-text-secondary text-base leading-relaxed font-sans">
-              Whether it's a role, a collaboration, or just a conversation &mdash; reach out.
+              Whether it&apos;s a role, a collaboration, or just a conversation &mdash; reach out.
             </p>
           </FadeUp>
 
