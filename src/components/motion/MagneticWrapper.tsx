@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { gsap } from "@/lib/gsap";
 
 interface MagneticWrapperProps {
   children: React.ReactElement;
@@ -12,34 +12,41 @@ interface MagneticWrapperProps {
 export function MagneticWrapper({ children, className }: MagneticWrapperProps) {
   const prefersReduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current || prefersReduced) return;
-    const { left, top, width, height } = ref.current.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) * 0.25;
-    const y = (e.clientY - top - height / 2) * 0.25;
-    setPosition({ x, y });
-  };
+  useEffect(() => {
+    if (prefersReduced || !ref.current) return;
 
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
+    const element = ref.current;
 
-  if (prefersReduced) {
-    return <div className={className}>{children}</div>;
-  }
+    // Create quickTo setter functions for high-performance 120FPS DOM translations
+    const xTo = gsap.quickTo(element, "x", { duration: 0.6, ease: "power3.out" });
+    const yTo = gsap.quickTo(element, "y", { duration: 0.6, ease: "power3.out" });
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { left, top, width, height } = element.getBoundingClientRect();
+      const x = (e.clientX - left - width / 2) * 0.35;
+      const y = (e.clientY - top - height / 2) * 0.35;
+      xTo(x);
+      yTo(y);
+    };
+
+    const handleMouseLeave = () => {
+      xTo(0);
+      yTo(0);
+    };
+
+    element.addEventListener("mousemove", handleMouseMove);
+    element.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      element.removeEventListener("mousemove", handleMouseMove);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [prefersReduced]);
 
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }

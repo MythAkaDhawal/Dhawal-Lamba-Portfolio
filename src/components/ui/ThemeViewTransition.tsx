@@ -1,9 +1,11 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect, @typescript-eslint/no-explicit-any */
 import { motion } from "framer-motion";
 import { GripHorizontal } from "lucide-react";
 import { useTheme } from "next-themes";
 import React, { useCallback, useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 
 export type AnimationVariant =
@@ -555,7 +557,7 @@ export const useThemeToggle = ({
   blur?: boolean;
   gifUrl?: string;
 } = {}) => {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -586,7 +588,9 @@ export const useThemeToggle = ({
     if (typeof window === "undefined") return;
 
     const switchTheme = () => {
-      setTheme(theme === "light" ? "dark" : "light");
+      flushSync(() => {
+        setTheme(resolvedTheme === "light" ? "dark" : "light");
+      });
     };
 
     const doc = document as any;
@@ -599,7 +603,7 @@ export const useThemeToggle = ({
     transition.finished.finally(() => {
       updateStyles("");
     });
-  }, [theme, setTheme, variant, start, blur, gifUrl, updateStyles]);
+  }, [resolvedTheme, setTheme, variant, start, blur, gifUrl, updateStyles]);
 
   const setCrazyLightTheme = useCallback(() => {
     setIsDark(false);

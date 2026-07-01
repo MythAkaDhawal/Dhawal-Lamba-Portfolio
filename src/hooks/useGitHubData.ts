@@ -63,8 +63,9 @@ export function useGitHubData() {
         );
 
         setData(freshData);
-      } catch (err: any) {
-        setError(err.message || "An error occurred");
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "An error occurred";
+        setError(errorMsg);
       } finally {
         setLoading(false);
       }

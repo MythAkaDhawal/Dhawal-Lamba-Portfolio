@@ -2,7 +2,6 @@
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import React, { useRef } from "react";
-import { cn } from "@/lib/utils";
 
 const SPRING_CONFIG = {
   mass: 0.1,    // Controls inertia. Lower mass = snappier motion.

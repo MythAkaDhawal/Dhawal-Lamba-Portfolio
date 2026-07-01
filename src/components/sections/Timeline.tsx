@@ -1,25 +1,44 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { timelineData } from "@/data/timeline";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { StaggerChildren } from "@/components/motion/StaggerChildren";
+import { gsap } from "@/lib/gsap";
+import { ScrollTrigger } from "@/lib/gsap/ScrollTrigger";
 
 export default function Timeline() {
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"]
-  });
+  useEffect(() => {
+    const container = containerRef.current;
+    if (prefersReduced || !container || !lineRef.current) return;
 
-  // Scale progress line from 0 to 1 on scroll
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tl = gsap.to(lineRef.current, {
+      scaleY: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: container,
+        start: "top center",
+        end: "bottom center",
+        scrub: true,
+      }
+    });
+
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === container) st.kill();
+      });
+    };
+  }, [prefersReduced]);
 
   return (
     <section
@@ -45,9 +64,9 @@ export default function Timeline() {
 
             {/* Active Drawing Line */}
             {!prefersReduced && (
-              <motion.div
-                style={{ scaleY }}
-                className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[2px] bg-highlight origin-top -translate-x-1/2"
+              <div
+                ref={lineRef}
+                className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[2px] bg-highlight origin-top -translate-x-1/2 scale-y-0"
               />
             )}
 
@@ -97,7 +116,9 @@ export default function Timeline() {
                         <h4 className="text-display text-xl md:text-2xl text-text-primary select-none">
                           {event.title}
                         </h4>
-                        <p className="text-text-secondary text-sm md:text-base leading-relaxed font-sans max-w-md md:ml-auto md:mr-0">
+                        <p className={`text-text-secondary text-sm md:text-base leading-relaxed font-sans max-w-md ${
+                          isEven ? "md:mr-auto md:ml-0" : "md:ml-auto md:mr-0"
+                        }`}>
                           {event.description}
                         </p>
                       </div>

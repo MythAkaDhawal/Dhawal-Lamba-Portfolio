@@ -1,4 +1,6 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface ContributionDay {
   date: string;
@@ -11,6 +13,8 @@ interface ContributionGraphProps {
 }
 
 export function ContributionGraph({ contributions }: ContributionGraphProps) {
+  const prefersReduced = useReducedMotion();
+
   // Pad contributions to complete full weeks if necessary (91 days total = 13 weeks * 7 days)
   const totalDays = 91;
   const days = [...contributions];
@@ -44,15 +48,43 @@ export function ContributionGraph({ contributions }: ContributionGraphProps) {
     }
   };
 
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: prefersReduced ? 0 : 0.03,
+      },
+    },
+  };
+
+  const weekVariants = {
+    hidden: { opacity: 0, y: prefersReduced ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.35, ease: "easeOut" as const },
+    },
+  };
+
   return (
     <div className="p-6 rounded-lg bg-bg-secondary border border-border-subtle select-none">
       <h5 className="font-mono text-xs font-semibold text-text-secondary uppercase tracking-wider mb-4">
         Recent Activity (Last 90 Days)
       </h5>
 
-      <div className="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-40px" }}
+        className="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2"
+      >
         {weeks.map((week, wIdx) => (
-          <div key={wIdx} className="flex flex-col space-y-1.5 flex-shrink-0">
+          <motion.div
+            key={wIdx}
+            variants={weekVariants}
+            className="flex flex-col space-y-1.5 flex-shrink-0"
+          >
             {week.map((day, dIdx) => (
               <div
                 key={day.date || `${wIdx}-${dIdx}`}
@@ -72,9 +104,9 @@ export function ContributionGraph({ contributions }: ContributionGraphProps) {
                 }
               />
             ))}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Legend */}
       <div className="flex items-center justify-end space-x-2 mt-4 text-[10px] text-text-tertiary font-mono">

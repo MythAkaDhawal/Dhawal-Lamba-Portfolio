@@ -1,12 +1,17 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
+import { useThemeToggle } from "@/components/ui/ThemeViewTransition";
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { isDark, toggleTheme } = useThemeToggle({
+    variant: "circle",
+    start: "top-right",
+    blur: false,
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -18,11 +23,9 @@ export function ThemeToggle() {
     );
   }
 
-  const isDark = resolvedTheme === "dark";
-
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={toggleTheme}
       className="relative w-10 h-10 rounded-full border border-border-default flex items-center justify-center bg-bg-secondary text-text-primary hover:bg-bg-tertiary focus-ring cursor-pointer transition-colors duration-200 z-50"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >

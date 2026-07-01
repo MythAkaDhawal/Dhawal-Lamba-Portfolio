@@ -41,6 +41,8 @@
   --highlight: #3D5AFE;
   --highlight-dim: rgba(61, 90, 254, 0.08);
   --stroke-color: #D1D0CB;
+  --stroke-flow-start: rgba(61, 90, 254, 0.35);
+  --stroke-flow-end: rgba(209, 208, 203, 0);
 
   /* Font Scale Definitions */
   --type-xs: 0.75rem;
@@ -88,6 +90,8 @@
   --highlight: #6B7FFF;
   --highlight-dim: rgba(107, 127, 255, 0.10);
   --stroke-color: #302F2C;
+  --stroke-flow-start: rgba(107, 127, 255, 0.25);
+  --stroke-flow-end: rgba(48, 47, 44, 0);
 }
 
 /* Base Styles */

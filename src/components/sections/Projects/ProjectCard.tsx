@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { ExternalLink } from "lucide-react";
 import { TechTag } from "./TechTag";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { Project } from "@/types/project";
+import { MagneticWrapper } from "@/components/motion/MagneticWrapper";
+import { gsap } from "@/lib/gsap";
+import { ScrollTrigger } from "@/lib/gsap/ScrollTrigger";
 
 // Inline SVG Github component replacing lucide-react version
 function GithubIcon({ className }: { className?: string }) {
@@ -34,44 +36,70 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const prefersReduced = useReducedMotion();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const accentLineRef = useRef<HTMLDivElement>(null);
+
   const displayIndex = String(index + 1).padStart(2, "0");
   const isFlagship = project.featured;
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: prefersReduced ? 0 : 30 },
-    visible: {
+  useEffect(() => {
+    const card = cardRef.current;
+    const accentLine = accentLineRef.current;
+    if (prefersReduced || !card || !accentLine) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Initial state setup to prevent styling flash
+    gsap.set(card, { opacity: 0, y: 30 });
+    gsap.set(accentLine, { scaleY: 0, transformOrigin: "top center" });
+
+    // 1. Accent line draws itself in sync with page scroll
+    const lineTween = gsap.to(accentLine, {
+      scaleY: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: card,
+        start: "top bottom",
+        end: "center center",
+        scrub: true,
+      }
+    });
+
+    // 2. Card clean fade-in and slide-up reveal
+    const revealTween = gsap.to(card, {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" as const }
-    }
-  };
+      duration: 0.65,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: card,
+        start: "top 88%",
+        toggleActions: "play none none none"
+      }
+    });
 
-
-  const lineVariants = {
-    hidden: { scaleY: 0, originY: 0 },
-    visible: {
-      scaleY: 1,
-      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }
-    }
-  };
-
+    return () => {
+      lineTween.kill();
+      revealTween.kill();
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === card) st.kill();
+      });
+    };
+  }, [prefersReduced]);
 
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={cardVariants}
-      className={`relative w-full transition-all duration-300 ${
+    <div
+      ref={cardRef}
+      className={`relative w-full opacity-100 ${
         isFlagship
           ? "bg-bg-secondary p-8 md:p-12 rounded-xl border border-border-subtle"
           : "bg-transparent py-8 md:py-12 border-b border-border-subtle"
       }`}
     >
       {/* Left accent line drawing itself on scroll */}
-      <motion.div
-        variants={lineVariants}
-        className="absolute left-0 top-0 bottom-0 w-[2px] bg-highlight"
+      <div
+        ref={accentLineRef}
+        className="absolute left-0 top-0 bottom-0 w-[2px] bg-highlight origin-top"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pl-6 md:pl-8">
@@ -103,26 +131,30 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             {/* Links */}
             <div className="flex items-center space-x-3">
               {project.github && (
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full border border-border-default flex items-center justify-center text-text-secondary hover:text-highlight hover:bg-bg-tertiary transition-all duration-200"
-                  aria-label={`${project.title} GitHub repository (opens in new tab)`}
-                >
-                  <GithubIcon className="w-4 h-4" />
-                </a>
+                <MagneticWrapper>
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full border border-border-default flex items-center justify-center text-text-secondary hover:text-highlight hover:bg-bg-tertiary transition-all duration-200"
+                    aria-label={`${project.title} GitHub repository (opens in new tab)`}
+                  >
+                    <GithubIcon className="w-4 h-4" />
+                  </a>
+                </MagneticWrapper>
               )}
               {project.live_demo && (
-                <a
-                  href={project.live_demo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full border border-border-default flex items-center justify-center text-text-secondary hover:text-highlight hover:bg-bg-tertiary transition-all duration-200"
-                  aria-label={`${project.title} live demo (opens in new tab)`}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                <MagneticWrapper>
+                  <a
+                    href={project.live_demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full border border-border-default flex items-center justify-center text-text-secondary hover:text-highlight hover:bg-bg-tertiary transition-all duration-200"
+                    aria-label={`${project.title} live demo (opens in new tab)`}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </MagneticWrapper>
               )}
             </div>
           </div>
@@ -156,7 +188,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

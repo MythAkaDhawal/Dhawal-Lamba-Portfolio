@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RepoCard } from "./RepoCard";
@@ -80,9 +81,15 @@ export default function GitHubSection() {
                     {data.languageStats.map((stat, idx) => {
                       const colorClass = languageColors[stat.name] || "bg-text-tertiary";
                       return (
-                        <div
+                        <motion.div
                           key={stat.name}
-                          style={{ width: `${stat.percentage}%` }}
+                          initial={{ width: "0%" }}
+                          animate={{ width: `${stat.percentage}%` }}
+                          transition={{
+                            duration: 0.8,
+                            ease: [0.25, 0.46, 0.45, 0.94] as const,
+                            delay: idx * 0.05 + 0.2,
+                          }}
                           className={`${colorClass} h-full transition-all duration-300`}
                           title={`${stat.name}: ${stat.percentage}%`}
                         />
@@ -114,13 +121,16 @@ export default function GitHubSection() {
                   Recently Updated Repositories
                 </h5>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <StaggerChildren
+                  staggerDelay={0.06}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
                   {data.repos.map((repo) => (
                     <FadeUp key={repo.name}>
                       <RepoCard repo={repo} />
                     </FadeUp>
                   ))}
-                </div>
+                </StaggerChildren>
               </div>
             </div>
           )}

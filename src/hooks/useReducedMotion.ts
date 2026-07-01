@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useReducedMotion as useFramerReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 

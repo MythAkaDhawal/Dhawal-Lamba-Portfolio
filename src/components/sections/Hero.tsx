@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { socialLinks } from "@/data/social";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { gsap } from "@/lib/gsap";
+import { SplitText } from "@/lib/gsap/SplitText";
 
 // Inline SVG components replacing removed brand icons from lucide-react
 function GithubIcon({ className }: { className?: string }) {
@@ -49,6 +51,7 @@ function LinkedinIcon({ className }: { className?: string }) {
 
 export function Hero() {
   const prefersReduced = useReducedMotion();
+  const nameRef = useRef<HTMLHeadingElement>(null);
 
   // Mouse Parallax on Desktop
   const x = useMotionValue(0);
@@ -74,6 +77,28 @@ export function Hero() {
     x.set(0);
     y.set(0);
   };
+
+  useEffect(() => {
+    if (prefersReduced || !nameRef.current) return;
+
+    gsap.registerPlugin(SplitText);
+
+    const split = new SplitText(nameRef.current, { type: "chars" });
+
+    // Animate characters with a smooth springy reveal
+    gsap.from(split.chars, {
+      y: 48,
+      opacity: 0,
+      stagger: 0.035,
+      duration: 0.75,
+      ease: "power4.out",
+      delay: 0.15,
+    });
+
+    return () => {
+      split.revert();
+    };
+  }, [prefersReduced]);
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -122,12 +147,12 @@ export function Hero() {
 
             {/* Name */}
             <motion.h1
-              variants={fadeInUpItem}
+              ref={nameRef}
               className="text-display text-[clamp(2.5rem,8vw,4.5rem)] font-normal text-text-primary uppercase tracking-tighter leading-none flex flex-col"
               style={{ x: moveX, y: moveY }}
             >
-              <span>DHAWAL</span>
-              <span>LAMBA</span>
+              <span className="block overflow-hidden">DHAWAL</span>
+              <span className="block overflow-hidden">LAMBA</span>
             </motion.h1>
 
             {/* Role & Value Prop */}

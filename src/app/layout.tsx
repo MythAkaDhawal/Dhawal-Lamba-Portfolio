@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ScrollSmootherProvider } from "@/components/providers/ScrollSmootherProvider";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
@@ -69,7 +70,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          {children}
+          <ScrollSmootherProvider>
+            {children}
+          </ScrollSmootherProvider>
         </ThemeProvider>
       </body>
     </html>
